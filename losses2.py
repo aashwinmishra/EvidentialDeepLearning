@@ -2,20 +2,20 @@ import torch
 import torch.nn.functional as F
 
 
-def get_device():
+def get_device() -> torch.device:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     return device
 
 
-def relu_evidence(y):
+def relu_evidence(y: torch.tensor) -> torch.tensor:
     return F.relu(y)
 
 
-def softplus_evidence(y):
+def softplus_evidence(y: torch.tensor) -> torch.tensor:
     return F.softplus(y)
 
 
-def kl_divergence(alpha, num_classes, device=None):
+def kl_divergence(alpha: torch.tensor, num_classes: int, device: torch.device = None) -> torch.tensor:
     if not device:
         device = get_device()
 
@@ -28,7 +28,7 @@ def kl_divergence(alpha, num_classes, device=None):
     return kl_d
 
 
-def loglikelihood_loss(y, alpha, device=None):
+def loglikelihood_loss(y: torch.tensor, alpha: torch.tensor, device: torch.device = None) -> torch.tensor:
     if not device:
         device = get_device()
     y = y.to(device)
@@ -40,7 +40,11 @@ def loglikelihood_loss(y, alpha, device=None):
     return prediction_error + dirichlet_variance
 
 
-def mse_loss(y, alpha, epoch_num, num_classes, device=None):
+def mse_loss(y: torch.tensor,
+             alpha: torch.tensor,
+             epoch_num: int,
+             num_classes: int,
+             device: torch.device = None) -> torch.tensor:
     if not device:
         device = get_device()
     y = y.to(device)
@@ -52,7 +56,11 @@ def mse_loss(y, alpha, epoch_num, num_classes, device=None):
     return loglikelihood + annealing_coeff*kl_d
 
 
-def edl_mse_loss(output, target, epoch_num, num_classes, device=None):
+def edl_mse_loss(output: torch.tensor,
+                 target: torch.tensor,
+                 epoch_num: int,
+                 num_classes: int,
+                 device: torch.device = None) -> torch.tensor:
     if not device:
         device = get_device()
 
